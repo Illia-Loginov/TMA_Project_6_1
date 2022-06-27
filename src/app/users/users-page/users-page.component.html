@@ -1,0 +1,14 @@
+<app-users-actions
+    (selectAll)="onSelectAll()"
+    (delete)="onDelete()"
+    (sort)="onSort($event)"
+    (search)="onSearch($event)"
+></app-users-actions>
+<div class="grid">
+    <app-user-card
+        *ngFor="let user of this.displayUsers" 
+        [user]="user"
+        [checked]="checked.includes(user.id)"
+        (check)="onCheck(user.id, $event)"
+    ></app-user-card>
+</div>

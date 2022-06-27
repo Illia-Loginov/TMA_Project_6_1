@@ -1,0 +1,13 @@
+<mat-toolbar>
+    <button mat-button (click)="onSelectAll()">Select all</button>
+    <button mat-button (click)="onDelete()">Delete</button>
+    <button mat-button [matMenuTriggerFor]="menu">Sort</button>
+    <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="onSort(true)">Ascending</button>
+        <button mat-menu-item (click)="onSort(false)">Descending</button>
+    </mat-menu>
+    <mat-form-field class="input">
+        <mat-label>Search</mat-label>
+        <input matInput placeholder="Enter name" [(ngModel)]="searchInput" (input)="onSearch()">
+    </mat-form-field>
+</mat-toolbar>
