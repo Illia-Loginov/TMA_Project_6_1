@@ -5,3 +5,10 @@ export interface User {
     email: string,
     phone: string
 }
+
+export interface ApiUser {
+    id: number,
+    name: string,
+    email: string,
+    phone: string
+}

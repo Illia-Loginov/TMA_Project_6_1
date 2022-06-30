@@ -4,6 +4,10 @@
     (sort)="onSort($event)"
     (search)="onSearch($event)"
 ></app-users-actions>
+<app-add-user-form
+    (addUser)="onAddUser($event)"
+></app-add-user-form>
+<mat-divider></mat-divider>
 <div class="grid">
     <app-user-card
         *ngFor="let user of this.displayUsers" 

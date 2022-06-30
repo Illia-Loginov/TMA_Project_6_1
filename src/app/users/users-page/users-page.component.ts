@@ -15,8 +15,11 @@ export class UsersPageComponent implements OnInit {
   constructor(private usersService: UsersService) { }
 
   ngOnInit(): void {
-    this.users = this.usersService.users;
-    this.displayUsers = this.users;
+    this.usersService.get()
+      .subscribe(users => {
+        this.users = users;
+        this.displayUsers = [ ...users ];
+      })
   }
 
   onSelectAll() {
@@ -28,9 +31,12 @@ export class UsersPageComponent implements OnInit {
   }
 
   onDelete() {
-    this.users = this.usersService.delete(...this.checked);
-    this.displayUsers = this.displayUsers.filter(user => !this.checked.includes(user.id));
-    this.checked = [];
+    this.usersService.delete(...this.checked)
+      .subscribe(() => {
+        this.users = this.users.filter(user => !this.checked.includes(user.id));
+        this.displayUsers = this.displayUsers.filter(user => !this.checked.includes(user.id));
+        this.checked = [];
+      })
   }
 
   onSort(ascending: boolean) {
@@ -52,6 +58,14 @@ export class UsersPageComponent implements OnInit {
       let fullname = `${user.firstname} ${user.lastname}`;
       return fullname.includes(input);
     })
+  }
+
+  onAddUser(userData: Omit<User, "id">) {
+    this.usersService.add(userData)
+      .subscribe(newUser => {
+        this.users.unshift(newUser);
+        this.displayUsers.unshift(newUser);
+      })
   }
 
   onCheck(id: number, checked: boolean) {

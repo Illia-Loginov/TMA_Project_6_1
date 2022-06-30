@@ -1,0 +1,40 @@
+<form class="form" [formGroup]="form">
+    <mat-form-field>
+        <mat-label>First name</mat-label>
+        <input matInput placeholder="Enter first name" type="text" formControlName="firstname">
+        <mat-error *ngIf="form.controls['firstname'].hasError('required')">First name is required</mat-error>
+        <mat-error *ngIf="form.controls['firstname'].hasError('minlength')">First name must be at least 3 characters</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Last name</mat-label>
+        <input matInput placeholder="Enter last name" type="text" formControlName="lastname">
+        <mat-error *ngIf="form.controls['lastname'].hasError('required')">Last name is required</mat-error>
+        <mat-error *ngIf="form.controls['lastname'].hasError('minlength')">Last name must be at least 3 characters</mat-error>
+        <mat-error *ngIf="form.controls['lastname'].hasError('maxlength')">Last name must not be longer than 60 characters</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>E-mail</mat-label>
+        <input matInput placeholder="Enter e-mail" type="email" formControlName="email">
+        <mat-error *ngIf="form.controls['email'].hasError('required')">E-mail is required</mat-error>
+        <mat-error *ngIf="form.controls['email'].hasError('email')">Enter valid e-mail</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Phone number</mat-label>
+        <input matInput placeholder="Enter phone number" type="phone" formControlName="phone">
+        <mat-error *ngIf="form.controls['phone'].hasError('required')">Phone is required</mat-error>
+        <mat-error *ngIf="form.controls['phone'].hasError('pattern')">Phone must only contain numbers</mat-error>
+    </mat-form-field>
+    
+    <button 
+        mat-raised-button 
+        class="form__submit" 
+        (click)="onSubmit()" 
+        [disabled]="form.controls['firstname'].errors || 
+            form.controls['lastname'].errors || 
+            form.controls['email'].errors || 
+            form.controls['phone'].errors"
+    >Add</button>
+</form>

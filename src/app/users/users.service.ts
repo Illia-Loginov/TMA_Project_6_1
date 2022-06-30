@@ -1,53 +1,51 @@
 import { Injectable } from '@angular/core';
-import { User } from './User';
+import { User, ApiUser } from './User';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { forkJoin, Observable } from 'rxjs';
 
 @Injectable()
 export class UsersService {
+  baseUrl = 'https://jsonplaceholder.typicode.com';
   users: User[] = [];
 
-  constructor() {
-    this.users = [
-      {
-        id: 1,
-        firstname: 'Lauren',
-        lastname: 'Coles',
-        email: 'LaurenColes@teleworm.us',
-        phone: '079 7932 3858'
-      },
-      {
-        id: 2,
-        firstname: 'Michael',
-        lastname: 'Griffin',
-        email: 'MichaelGriffin@armyspy.com',
-        phone: '077 8531 5363'
-      },
-      {
-        id: 3,
-        firstname: 'Bailey',
-        lastname: 'Perkins',
-        email: 'BaileyPerkins@teleworm.us',
-        phone: '070 7377 7534'
-      },
-      {
-        id: 4,
-        firstname: 'Olivia',
-        lastname: 'Ellis',
-        email: 'OliviaEllis@rhyta.com',
-        phone: '079 6855 4342'
-      },
-      {
-        id: 5,
-        firstname: 'Elise',
-        lastname: 'Atkins',
-        email: 'EliseAtkins@jourrapide.com',
-        phone: '079 7039 4289'
-      },
-    ]
+  constructor(private http: HttpClient) {}
+
+  get(): Observable<User[]> {
+    return this.http.get<ApiUser[]>(`${this.baseUrl}/users`)
+      .pipe(map(users => users.map(user => {
+        const [ firstname, lastname ] = user.name.split(' ');
+        return {
+          id: user.id,
+          firstname,
+          lastname,
+          email: user.email,
+          phone: user.phone
+        }
+      })));
   }
 
-  delete(...ids: number[]): User[] {
-    this.users = this.users.filter(user => !ids.includes(user.id));
+  add(user: Omit<User, 'id'>): Observable<User> {
+    let reqUser: Omit<ApiUser, 'id'> = {
+      name: `${user.firstname} ${user.lastname}`,
+      email: user.email,
+      phone: user.phone
+    }
 
-    return this.users;
+    return this.http.post<ApiUser>(`${this.baseUrl}/users`, reqUser)
+      .pipe(map(resUser => {
+        const [ firstname, lastname ] = resUser.name.split(' ');
+        return {
+          id: resUser.id,
+          firstname,
+          lastname,
+          email: resUser.email,
+          phone: resUser.phone
+        }
+      }))
+  }
+
+  delete(...ids: number[]): Observable<{}[]> {
+    return forkJoin(ids.map(id => this.http.delete<{}>(`${this.baseUrl}/users/${id}`)))
   }
 }
